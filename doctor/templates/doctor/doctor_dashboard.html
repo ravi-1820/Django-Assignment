@@ -1,0 +1,80 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2><i class="bi bi-person-badge text-primary me-2"></i>Welcome, Dr. {{ doctor.name }}</h2>
+        <p class="text-muted fs-5">{{ doctor.specialty }} | {{ doctor.location }}</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="card bg-light border-0 shadow-sm">
+            <div class="card-body py-3">
+                <form method="POST" class="d-flex align-items-center justify-content-md-end">
+                    {% csrf_token %}
+                    <span class="me-3 fw-bold">Availability:</span>
+                    <button type="submit" name="toggle_availability" class="btn {% if doctor.availability %}btn-success{% else %}btn-secondary{% endif %} rounded-pill px-4">
+                        {% if doctor.availability %}
+                            <i class="bi bi-check-circle me-1"></i> Available
+                        {% else %}
+                            <i class="bi bi-pause-circle me-1"></i> Unavailable
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-4">My Appointments</h4>
+
+{% if appointments %}
+<div class="row g-4">
+    {% for appt in appointments %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 position-relative">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="card-title mb-0 fw-bold">{{ appt.patient.name }}</h5>
+                        <small class="text-muted"><i class="bi bi-telephone me-1"></i>{{ appt.patient.phone }}</small>
+                    </div>
+                    {% if appt.status == 'Confirmed' %}
+                        <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle me-1"></i>{{ appt.status }}</span>
+                    {% elif appt.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark rounded-pill"><i class="bi bi-hourglass-split me-1"></i>{{ appt.status }}</span>
+                    {% else %}
+                        <span class="badge bg-danger rounded-pill"><i class="bi bi-x-circle me-1"></i>{{ appt.status }}</span>
+                    {% endif %}
+                </div>
+                
+                <hr class="text-muted opacity-25 my-3">
+                
+                <p class="mb-2"><i class="bi bi-calendar-event text-primary me-2"></i><strong>Date:</strong> {{ appt.date|date:"F d, Y" }}</p>
+                <p class="mb-2"><i class="bi bi-clock text-primary me-2"></i><strong>Time:</strong> {{ appt.time|time:"h:i A" }}</p>
+            </div>
+            <div class="card-footer bg-light border-0 p-3 rounded-bottom-4">
+                <form method="POST" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="appointment_id" value="{{ appt.id }}">
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="Pending" {% if appt.status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option value="Confirmed" {% if appt.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option value="Cancelled" {% if appt.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                    <button type="submit" name="update_status" class="btn btn-sm btn-primary" style="display: none;">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 bg-white rounded-4 shadow-sm border-0">
+    <i class="bi bi-calendar-x text-muted mb-3" style="font-size: 4rem;"></i>
+    <h4 class="text-muted mb-3">No Appointments</h4>
+    <p class="text-muted mb-0">You don't have any appointments scheduled.</p>
+</div>
+{% endif %}
+{% endblock %}

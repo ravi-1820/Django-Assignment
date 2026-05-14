@@ -1,0 +1,34 @@
+{% extends 'doctor/base.html' %}
+
+{% block title %}Doctor Finder - Home{% endblock %}
+
+{% block content %}
+<div class="hero-section glass-panel">
+    <div class="hero-content">
+        <h2>Find the Best Doctors Near You</h2>
+        <p class="subtitle">Book an appointment easily and securely with top-rated medical professionals.</p>
+        
+        <div class="hero-actions">
+            <a href="{% url 'profile' %}" class="btn btn-primary btn-lg">Browse Doctors</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-light btn-lg">Register Now</a>
+        </div>
+    </div>
+    <div class="hero-features">
+        <div class="feature-card glass-panel">
+            <div class="icon">🔍</div>
+            <h3>Search Experts</h3>
+            <p>Find doctors by specialty or location</p>
+        </div>
+        <div class="feature-card glass-panel">
+            <div class="icon">📅</div>
+            <h3>Easy Booking</h3>
+            <p>Schedule your visits without hassle</p>
+        </div>
+        <div class="feature-card glass-panel">
+            <div class="icon">🔒</div>
+            <h3>Secure Data</h3>
+            <p>Your health information is protected</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
